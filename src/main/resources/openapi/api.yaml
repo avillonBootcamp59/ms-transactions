@@ -1,0 +1,123 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+- url: http://localhost:8084
+  description: Generated server url
+tags:
+- name: Transaction API
+  description: Gestión de transacciones bancarias
+paths:
+  /v1.0/transactions:
+    get:
+      tags:
+      - Transaction API
+      summary: Obtener todas las transacciones
+      description: Lista todas las transacciones realizadas por clientes
+      operationId: getAllTransactions
+      responses:
+        "500":
+          description: Error interno del servidor
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Transaction'
+        "200":
+          description: Lista de transacciones obtenida correctamente
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Transaction'
+    post:
+      tags:
+      - Transaction API
+      summary: Registrar una nueva transacción
+      description: "Permite registrar depósitos, retiros y pagos de créditos"
+      operationId: createTransaction
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Transaction'
+        required: true
+      responses:
+        "201":
+          description: Transacción creada correctamente
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Transaction'
+        "500":
+          description: Error interno del servidor
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Transaction'
+        "400":
+          description: Error en la validación de la transacción
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Transaction'
+  /v1.0/transactions/{productId}:
+    get:
+      tags:
+      - Transaction API
+      summary: Obtener transacciones por ID de producto
+      description: Lista las transacciones asociadas a una cuenta bancaria o un crédito
+      operationId: getTransactionsByProduct
+      parameters:
+      - name: productId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "500":
+          description: Error interno del servidor
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Transaction'
+        "200":
+          description: Transacciones obtenidas correctamente
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Transaction'
+        "404":
+          description: No se encontraron transacciones para el producto especificado
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Transaction'
+components:
+  schemas:
+    Transaction:
+      type: object
+      properties:
+        id:
+          type: string
+        accountId:
+          type: string
+        type:
+          type: string
+        amount:
+          type: number
+          format: double
+        creditId:
+          type: string
+        date:
+          type: string
+          format: date-time
