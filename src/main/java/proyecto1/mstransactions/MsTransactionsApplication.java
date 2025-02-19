@@ -7,7 +7,6 @@ import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRep
 
 @SpringBootApplication
 @EnableReactiveMongoRepositories(basePackages = "proyecto1.mstransactions.repository")
-@EnableFeignClients(basePackages = "proyecto1.mstransactions.client")
 public class MsTransactionsApplication {
 
 	public static void main(String[] args) {
