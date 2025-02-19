@@ -10,11 +10,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import proyecto1.mstransactions.repository.TransactionRepository;
 import proyecto1.mstransactions.service.TransactionService;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import proyecto1.mstransactions.entity.Transaction;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/v1.0/transactions")
@@ -23,10 +26,10 @@ import proyecto1.mstransactions.entity.Transaction;
 public class TransactionController {
 
     private static final Logger logger = LoggerFactory.getLogger(TransactionController.class);
-    private final TransactionRepository repository;
     private final TransactionService transactionService;
 
-    @Operation(summary = "Obtener todas las transacciones", description = "Lista todas las transacciones realizadas por clientes")
+    @Operation(summary = "Obtener todas las transacciones",
+               description = "Lista todas las transacciones realizadas por clientes")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Lista de transacciones obtenida correctamente"),
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
@@ -34,34 +37,48 @@ public class TransactionController {
     @GetMapping
     public Flux<Transaction> getAllTransactions() {
         logger.info("Obteniendo todas las transacciones bancarias");
-        return repository.findAll();
+        return transactionService.listTransactions();
     }
 
-    @Operation(summary = "Registrar una nueva transacción", description = "Permite registrar depósitos, retiros y pagos de créditos")
+    @Operation(summary = "Registrar una nueva transacción",
+               description = "Permite registrar depósitos, retiros y pagos de créditos")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Transacción creada correctamente"),
             @ApiResponse(responseCode = "400", description = "Error en la validación de la transacción"),
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
     @PostMapping
-    public Mono<ResponseEntity<Transaction>> createTransaction(@RequestBody Transaction transaction) {
-        return transactionService.validateAndCreateTransaction(transaction)
-                .map(savedTransaction -> ResponseEntity.status(HttpStatus.CREATED).body(savedTransaction))
-                .onErrorResume(error -> {
-                    logger.error("Error al crear Transacción: {}", error.getMessage());
-                        return Mono.just(ResponseEntity.badRequest().body(null));
+    public Mono<ResponseEntity<Map<String, String>>>  createTransaction(@RequestBody Transaction transaction) {
+        return transactionService.createTransaction(transaction)
+                .map(savedAccount -> ResponseEntity.status(HttpStatus.CREATED)
+                        .body(Map.of("message", "Transacción creada exitosamente", "id", savedAccount.getId())))
+                .onErrorResume(ResponseStatusException.class, ex -> {
+                    Map<String, String> errorResponse = Map.of(
+                            "error", ex.getReason(),
+                            "status", String.valueOf(ex.getRawStatusCode())
+                    );
+                    return Mono.just(ResponseEntity.status(ex.getRawStatusCode()).body(errorResponse));
                 });
     }
 
-    @Operation(summary = "Obtener transacciones por ID de producto", description = "Lista las transacciones asociadas a una cuenta bancaria o un crédito")
+    @Operation(summary = "Obtener transacciones por ID de producto",
+               description = "Lista las transacciones asociadas a una cuenta bancaria o un crédito")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Transacciones obtenidas correctamente"),
-            @ApiResponse(responseCode = "404", description = "No se encontraron transacciones para el producto especificado"),
+            @ApiResponse(responseCode = "404", description = "No se encontraron transacciones para el producto"),
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
     @GetMapping("/{productId}")
     public Flux<Transaction> getTransactionsByProduct(@PathVariable String productId) {
         return transactionService.getTransactionsByProduct(productId)
-                .switchIfEmpty(Flux.error(new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.NOT_FOUND, "No se encontraron transacciones")));
+                .switchIfEmpty(Flux.error(new org.springframework.web.server.ResponseStatusException(
+                        org.springframework.http.HttpStatus.NOT_FOUND, "No se encontraron transacciones")));
     }
+    @Operation(summary = "Contar transacciones de una cuenta")
+    @ApiResponse(responseCode = "200", description = "Número de transacciones obtenidas correctamente")
+    @GetMapping("/count/{accountId}")
+    public Mono<Long> getTransactionCount(@PathVariable String accountId) {
+        return transactionService.countByAccountId(accountId);
+    }
+
 }

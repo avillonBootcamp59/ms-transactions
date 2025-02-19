@@ -12,4 +12,5 @@ public class AccountDTO {
     private String customerId;
     private Double balance;
     private int transactionLimit;
+    private Double commissionFee;
 }
