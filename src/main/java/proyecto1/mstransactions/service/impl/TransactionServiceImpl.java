@@ -77,7 +77,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     private Mono<Boolean> validateSavingAccountTransactions(AccountDTO account) {
         return transactionRepository.findByAccountId(account.getId())
-                .filter(transaction -> transaction.getDate().getMonth().equals(LocalDate.now().getMonth()))
+                .filter(transaction -> transaction.getTransactionDate().getMonth().equals(LocalDate.now().getMonth()))
                 .count()
                 .map(count -> count < account.getTransactionLimit());
     }
@@ -119,7 +119,7 @@ public class TransactionServiceImpl implements TransactionService {
 
 
     public Mono<AccountDTO> validateAndCreateTransaction(Transaction transaction, AccountDTO account) {
-        return transactionRepository.countByAccountIdAndDateBetween(
+        return transactionRepository.countByAccountIdAndTransactionDateBetween(
                 transaction.getAccountId(),
                 LocalDateTime.now().withDayOfMonth(1), // Primer día del mes
                 LocalDateTime.now().withDayOfMonth(LocalDateTime.now().toLocalDate().lengthOfMonth()) // Último día del mes
@@ -138,6 +138,11 @@ public class TransactionServiceImpl implements TransactionService {
     public Mono<Long> countByAccountId(String accountId) {
         return transactionRepository.countByAccountId(accountId)
                 .switchIfEmpty(Mono.just(0L));
+    }
+
+    @Override
+    public Flux<Transaction> getTransactionsByDateRange(LocalDateTime startDate, LocalDateTime endDate) {
+        return transactionRepository.findByTransactionDateBetween(startDate, endDate);
     }
 
 }

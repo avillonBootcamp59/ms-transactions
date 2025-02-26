@@ -16,11 +16,10 @@ public class Transaction {
     private String type;  // "deposito", "retiro", "pago"
     private double amount;
     private String creditId;
-    private LocalDateTime date;
     private Double fee; // comisión generada
-
+    private LocalDateTime transactionDate;
     public Transaction() {
-        this.date = LocalDateTime.now();
+        this.transactionDate = LocalDateTime.now();
     }
 
 }
