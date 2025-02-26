@@ -17,6 +17,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import proyecto1.mstransactions.entity.Transaction;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 
 @RestController
@@ -79,6 +80,19 @@ public class TransactionController {
     @GetMapping("/count/{accountId}")
     public Mono<Long> getTransactionCount(@PathVariable String accountId) {
         return transactionService.countByAccountId(accountId);
+    }
+    @Operation(summary = "Reporte de transacción",
+            description = "Permite visualizar depósitos, retiros y pagos de créditos")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Obtención exitosa"),
+            @ApiResponse(responseCode = "400", description = "Error en la validación de la transacción"),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+    })
+    @GetMapping("/report")
+    public Flux<Transaction> getTransactionsByDateRange(
+            @RequestParam LocalDateTime startDate,
+            @RequestParam LocalDateTime endDate) {
+        return transactionService.getTransactionsByDateRange(startDate, endDate);
     }
 
 }

@@ -13,6 +13,7 @@ public interface TransactionRepository extends ReactiveMongoRepository<Transacti
     Flux<Transaction> findByAccountId(String accountId);
     Flux<Transaction> findByCreditId(String creditId);
     Mono<Long> countByAccountId(String accountId);
-    Mono<Long> countByAccountIdAndDateBetween(String accountId, LocalDateTime startDate, LocalDateTime endDate);
+    Mono<Long> countByAccountIdAndTransactionDateBetween(String accountId, LocalDateTime startDate, LocalDateTime endDate);
+    Flux<Transaction> findByTransactionDateBetween(LocalDateTime startDate, LocalDateTime endDate);
 }
 
