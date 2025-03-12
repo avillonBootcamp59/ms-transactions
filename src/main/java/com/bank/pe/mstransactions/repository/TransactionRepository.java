@@ -1,8 +1,8 @@
-package proyecto1.mstransactions.repository;
+package com.bank.pe.mstransactions.repository;
 
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import org.springframework.stereotype.Repository;
-import proyecto1.mstransactions.entity.Transaction;
+import com.bank.pe.mstransactions.entity.Transaction;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 

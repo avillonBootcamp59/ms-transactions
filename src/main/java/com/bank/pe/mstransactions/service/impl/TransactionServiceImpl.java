@@ -1,17 +1,17 @@
-package proyecto1.mstransactions.service.impl;
+package com.bank.pe.mstransactions.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-import proyecto1.mstransactions.client.AccountClient;
-import proyecto1.mstransactions.client.CreditClient;
-import proyecto1.mstransactions.dto.AccountDTO;
-import proyecto1.mstransactions.dto.CreditDTO;
-import proyecto1.mstransactions.entity.Transaction;
-import proyecto1.mstransactions.repository.TransactionRepository;
-import proyecto1.mstransactions.service.TransactionService;
+import com.bank.pe.mstransactions.client.AccountClient;
+import com.bank.pe.mstransactions.client.CreditClient;
+import com.bank.pe.mstransactions.dto.AccountDTO;
+import com.bank.pe.mstransactions.dto.CreditDTO;
+import com.bank.pe.mstransactions.entity.Transaction;
+import com.bank.pe.mstransactions.repository.TransactionRepository;
+import com.bank.pe.mstransactions.service.TransactionService;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 

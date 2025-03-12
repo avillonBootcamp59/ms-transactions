@@ -26,5 +26,5 @@
     </root>
 
     <!-- Logs detallados para transactionsController -->
-    <logger name="proyecto1.mstransactions.rest.TransactionController" level="DEBUG"/>
+    <logger name="com.bank.pe.mstransactions.controllers.TransactionController" level="DEBUG"/>
 </configuration>

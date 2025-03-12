@@ -1,4 +1,4 @@
-package proyecto1.mstransactions.dto;
+package com.bank.pe.mstransactions.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;

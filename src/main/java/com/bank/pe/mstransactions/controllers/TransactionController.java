@@ -1,4 +1,4 @@
-package proyecto1.mstransactions.rest;
+package com.bank.pe.mstransactions.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -11,17 +11,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import proyecto1.mstransactions.repository.TransactionRepository;
-import proyecto1.mstransactions.service.TransactionService;
+import com.bank.pe.mstransactions.service.TransactionService;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import proyecto1.mstransactions.entity.Transaction;
+import com.bank.pe.mstransactions.entity.Transaction;
 
 import java.time.LocalDateTime;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/v1.0/transactions")
+@RequestMapping("/api/v1/transactions")
 @RequiredArgsConstructor
 @Tag(name = "Transaction API", description = "Gestión de transacciones bancarias")
 public class TransactionController {

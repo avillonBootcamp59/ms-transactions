@@ -1,4 +1,4 @@
-package proyecto1.mstransactions.entity;
+package com.bank.pe.mstransactions.entity;
 
 import lombok.Data;
 import org.bson.codecs.pojo.annotations.BsonId;

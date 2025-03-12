@@ -1,7 +1,6 @@
-package proyecto1.mstransactions.service;
+package com.bank.pe.mstransactions.service;
 
-import org.springframework.web.bind.annotation.RequestParam;
-import proyecto1.mstransactions.entity.Transaction;
+import com.bank.pe.mstransactions.entity.Transaction;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 

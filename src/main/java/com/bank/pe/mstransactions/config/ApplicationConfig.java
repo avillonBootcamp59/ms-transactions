@@ -1,4 +1,4 @@
-package proyecto1.mstransactions.config;
+package com.bank.pe.mstransactions.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
