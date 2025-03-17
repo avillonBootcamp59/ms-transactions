@@ -1,5 +1,6 @@
 package com.bank.pe.mstransactions.controllers;
 
+import com.bank.pe.mstransactions.dto.TransactionDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -48,8 +49,8 @@ public class TransactionController {
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
     @PostMapping
-    public Mono<ResponseEntity<Map<String, String>>>  createTransaction(@RequestBody Transaction transaction) {
-        return transactionService.createTransaction(transaction)
+    public Mono<ResponseEntity<Map<String, String>>>  createTransaction(@RequestBody TransactionDTO transaction) {
+        return transactionService.createTransaction(convertDtoToEntity(transaction))
                 .map(savedAccount -> ResponseEntity.status(HttpStatus.CREATED)
                         .body(Map.of("message", "Transacción creada exitosamente", "id", savedAccount.getId())))
                 .onErrorResume(ResponseStatusException.class, ex -> {
@@ -94,4 +95,16 @@ public class TransactionController {
         return transactionService.getTransactionsByDateRange(startDate, endDate);
     }
 
+    private Transaction convertDtoToEntity(TransactionDTO transactionDTO) {
+        return new Transaction(
+            null,
+                transactionDTO.getAccountId(),
+                transactionDTO.getType(),
+                transactionDTO.getAmount(),
+                transactionDTO.getCreditId(),
+                transactionDTO.getFee(),
+                LocalDateTime.now()
+
+        );
+    }
 }

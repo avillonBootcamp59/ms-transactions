@@ -3,7 +3,7 @@ spring:
     name: ms-transactions
   cloud:
     config:
-      enabled: false
+      enabled: true
       uri: http://localhost:8888
       username: avillon
       password: 4v1ll0nJd

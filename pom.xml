@@ -188,6 +188,12 @@
 				</executions>
 				<!-- Umbrales de Cobertura -->
 				<configuration>
+					<excludes>
+						<exclude>com/bank/pe/mstransactions/MsTransactionsApplication.class</exclude>
+						<exclude>com/bank/pe/mstransactions/dto/*</exclude>
+						<exclude>com/bank/pe/mstransactions/client/*</exclude>
+						<exclude>com/bank/pe/mstransactions/entity/*</exclude>
+					</excludes>
 					<rules>
 						<rule>
 							<element>BUNDLE</element>
@@ -195,7 +201,7 @@
 								<limit>
 									<counter>INSTRUCTION</counter>
 									<value>COVEREDRATIO</value>
-									<minimum>0.30</minimum><!-- Cobertura mínima del 80% -->
+									<minimum>0.80</minimum><!-- Cobertura mínima del 80% -->
 								</limit>
 							</limits>
 						</rule>

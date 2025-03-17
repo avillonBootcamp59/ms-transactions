@@ -14,7 +14,6 @@ import com.bank.pe.mstransactions.repository.TransactionRepository;
 import com.bank.pe.mstransactions.service.TransactionService;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
@@ -49,7 +48,7 @@ public class TransactionServiceImpl implements TransactionService {
         return accountClient.getAccountById(accountId)
                 .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Cuenta no encontrada")))
                 .flatMap(account -> {
-                    // 🔹 Validación de cuentas de ahorro
+                    // Validación de cuentas de ahorro
                     if ("AHORRO".equalsIgnoreCase(account.getType())) {
                         return validateSavingAccountTransactions(account)
                                 .flatMap(valid -> valid ? validateAndCreateTransaction(transaction, account) :
@@ -57,13 +56,13 @@ public class TransactionServiceImpl implements TransactionService {
                                                 "Límite de movimientos alcanzado.")));
                     }
 
-                    // 🔹 Validación de cuentas a plazo fijo
+                    // Validación de cuentas a plazo fijo
                     if ("PLAZO_FIJO".equalsIgnoreCase(account.getType()) && !isValidFixedDepositDate()) {
                         return Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST,
                                 "Depósitos o retiros solo permitidos en la fecha establecida."));
                     }
 
-                    // 🔹 Validación de saldo para retiros
+                    // Validación de saldo para retiros
                     if ("RETIRO".equalsIgnoreCase(transactionType) && account.getBalance() < amount) {
                         return Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST, "Fondos insuficientes."));
                     }
@@ -101,9 +100,11 @@ public class TransactionServiceImpl implements TransactionService {
                         HttpStatus.NOT_FOUND, "Transacción no encontrado")));
     }
 
+    @Override
     public Flux<Transaction> getTransactionsByProduct(String productId) {
         return transactionRepository.findByAccountId(productId)
-                .switchIfEmpty(transactionRepository.findByCreditId(productId));
+                .switchIfEmpty(transactionRepository.findByCreditId(productId))
+                .switchIfEmpty(Flux.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "No se encontraron transacciones")));
     }
 
     @Override
