@@ -7,7 +7,7 @@ spring:
       uri: http://localhost:8888
       username: avillon
       password: 4v1ll0nJd
-      fail-fast: true
+      fail-fast: false
       retry:
         max-attempts: 5
         initial-interval: 1000
